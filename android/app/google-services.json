@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "843292974595",
+    "project_id": "jaskub-53e1c",
+    "storage_bucket": "jaskub-53e1c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843292974595:android:1f1b6d2a5b292aac9af836",
+        "android_client_info": {
+          "package_name": "com.jaskub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843292974595-o4s2gbgubpbi70k6l25iit758qd4dl35.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6ALul-Ka6HOj22JlrlZ8ryBCMGs8mf8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843292974595-o4s2gbgubpbi70k6l25iit758qd4dl35.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
