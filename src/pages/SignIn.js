@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  SafeAreaView,
 } from 'react-native';
 import {Button, Gap, Header} from '../components';
 import {LogoSmall} from '../assets';
@@ -13,6 +14,8 @@ import auth, {firebase} from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {showMessage, hideMessage} from 'react-native-flash-message';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
 GoogleSignin.configure({
   webClientId:
@@ -47,9 +50,9 @@ export default class SignIn extends React.Component {
   render() {
     return (
       <ScrollView>
-        <View>
+        <View style={{flex: 1, backgroundColor: 'white', paddingBottom: 45}}>
           <View style={styles.headerWrapper}>
-            <Header title="MASUK" />
+            <Header title="MASUK" backgroundColor="#F8F8F8" color="#000000" />
           </View>
           {this.state.errorMessage && (
             <Text style={{color: 'red'}}>{this.state.errorMessage}</Text>
@@ -59,28 +62,45 @@ export default class SignIn extends React.Component {
               <LogoSmall />
             </View>
             <Text style={styles.text}>Email</Text>
-            <TextInput
-              style={styles.textInput}
-              autoCapitalize="none"
-              placeholder="Masukan Email Anda"
-              onChangeText={email => this.setState({email})}
-              value={this.state.email}
-            />
+            <SafeAreaView style={styles.safeView}>
+              <IonIcons
+                name="mail"
+                style={styles.Icons}
+                size={28}
+                color="#2196F3"
+              />
+
+              <TextInput
+                value={this.state.email}
+                onChangeText={email => this.setState({email})}
+                placeholder="E-mail"
+              />
+            </SafeAreaView>
             <Gap height={16} />
             <Text style={styles.text}>Password</Text>
-            <TextInput
-              secureTextEntry
-              style={styles.textInput}
-              autoCapitalize="none"
-              placeholder="Masukan Password Anda"
-              onChangeText={password => this.setState({password})}
-              value={this.state.password}
-            />
-            <Gap height={40} />
+            <SafeAreaView style={styles.safeView}>
+              <FontAwesome
+                name="lock"
+                style={styles.Icons}
+                size={28}
+                color="#2196F3"
+              />
+
+              <TextInput
+                value={this.state.password}
+                onChangeText={password => this.setState({password})}
+                placeholder="Password"
+                secureTextEntry
+                autoCapitalize="none"
+              />
+            </SafeAreaView>
+            <Gap height={36} />
             <Button title="Masuk" onPress={this.handleLogin} />
             <Gap height={20} />
             <Icon.Button
+              style={styles.iconButton}
               name="google"
+              size={28}
               backgroundColor="#8D92A3"
               onPress={() =>
                 onGoogleButtonPress().then(() =>
@@ -121,7 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingHorizontal: 24,
     paddingTop: 40,
-    paddingBottom: 200,
+    paddingBottom: 20,
   },
   headerWrapper: {
     textAlign: 'center',
@@ -135,4 +155,20 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Regular',
     textDecorationLine: 'underline',
   },
+  iconButton: {
+    height: 45,
+    borderRadius: 8,
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  safeView: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#2196F3',
+    borderRadius: 10,
+    backgroundColor: '#E8F6FF',
+  },
+  Icons: {flex: 0.1, marginLeft: 10},
 });

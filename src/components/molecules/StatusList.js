@@ -8,19 +8,18 @@ import {
   SafeAreaView,
 } from 'react-native';
 import React, {useState} from 'react';
-import {JW} from '../../assets/icon';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Modal from 'react-native-modal';
 import {Gap, Button} from '../atoms';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import IonIcons from 'react-native-vector-icons/Ionicons';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useNavigation} from '@react-navigation/native';
 
-const JobCard = ({title, location, value, tipe}) => {
+const StatusList = ({title, date, status}) => {
   const [modal, setModal] = useState(false);
+  const [modalStatus, setModalStatus] = useState(false);
+  const [eStatus, seteStatus] = useState('Digunakan');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [placeLocation, setPlaceLocation] = useState('');
 
   const navigation = useNavigation();
 
@@ -37,19 +36,31 @@ const JobCard = ({title, location, value, tipe}) => {
     hideDatePicker();
   };
 
+  hideStatus = () => {
+    setModalStatus(false);
+  };
+
+  handleStatus = () => {
+    seteStatus('Selesai');
+    hideStatus();
+  };
+
   return (
     <View>
-      <TouchableOpacity onPress={() => setModal(true)}>
+      <TouchableOpacity onPress={() => navigation.navigate('Rating')}>
         <View style={styles.container}>
-          <JW />
           <View>
-            <Text style={styles.item}>{title}</Text>
-            <Text style={styles.titleText}>{tipe}</Text>
-            <Text style={styles.value}>{value}</Text>
+            <Text style={styles.titleText}>{title}</Text>
+            <TouchableOpacity onPress={() => setModal(true)}>
+              <Text style={styles.dateText}>{date}</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.item}>{location}</Text>
+          <TouchableOpacity onPress={() => setModalStatus(true)}>
+            <Text style={styles.statusText}>{(status = eStatus)}</Text>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
+
       <Modal isVisible={modal} onBackdropPress={() => setModal(false)}>
         <View style={styles.modalBox}>
           <View style={styles.imageWrapper}>
@@ -58,7 +69,7 @@ const JobCard = ({title, location, value, tipe}) => {
               style={styles.modalImg}
             />
           </View>
-          <Text style={styles.modalText}>Gunakan Jasa</Text>
+          <Text style={styles.modalText}>Re-Schedule</Text>
           <View style={styles.modalContent}>
             <Text style={styles.text}>Tanggal Penggunaan Jasa</Text>
             <SafeAreaView style={styles.safeView}>
@@ -92,30 +103,28 @@ const JobCard = ({title, location, value, tipe}) => {
                 />
               </TouchableOpacity>
             </SafeAreaView>
-            <Gap height={16} />
-            <Text style={styles.text}>Lokasi</Text>
-            <SafeAreaView style={styles.safeView}>
-              <IonIcons
-                name="location"
-                style={styles.Icons}
-                size={28}
-                color="#2196F3"
-              />
-
-              <TextInput
-                value={placeLocation}
-                placeholder="Location"
-                style={{flex: 0.9}}
-              />
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Maps')}
-                style={{justifyContent: 'center', flex: 0.2, marginRight: 10}}>
-                <Text>Set Loc</Text>
-              </TouchableOpacity>
-            </SafeAreaView>
             <Gap height={20} />
-            <Button title="Gunakan" />
+            <Button title="Perbaharui Jadwal" onPress={() => setModal(false)} />
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        isVisible={modalStatus}
+        onBackdropPress={() => setModalStatus(false)}>
+        <View style={styles.modalBox}>
+          <View style={styles.imageWrapper}>
+            <Image
+              source={require('../../assets/icon/logojkb.png')}
+              style={styles.modalImg}
+            />
+          </View>
+          <Text style={styles.modalText}>Gunakan Jasa</Text>
+          <View style={styles.modalContent}>
+            <Text style={styles.textConf}>
+              Apakah telah menyelesaikan Jasa?
+            </Text>
+            <Gap height={20} />
+            <Button title="Selesai" onPress={handleStatus} />
           </View>
         </View>
       </Modal>
@@ -123,7 +132,7 @@ const JobCard = ({title, location, value, tipe}) => {
   );
 };
 
-export default JobCard;
+export default StatusList;
 
 const styles = StyleSheet.create({
   container: {
@@ -144,18 +153,18 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 16,
-    color: '#8D92A3',
+    fontSize: 18,
+    color: 'black',
   },
-  item: {
+  dateText: {
     fontFamily: 'Poppins-Regular',
     fontSize: 14,
     color: '#020202',
   },
-  value: {
+  statusText: {
     fontFamily: 'Poppins-Bold',
     fontSize: 14,
-    color: '#1ABC9C',
+    color: '#00952A',
   },
   modalBox: {
     backgroundColor: 'white',
@@ -190,6 +199,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     color: 'black',
   },
+  textConf: {
+    fontSize: 18,
+    fontFamily: 'Poppins-Light',
+    marginBottom: 6,
+    color: 'black',
+    textAlign: 'center',
+  },
   modalContent: {
     padding: 20,
   },
@@ -202,13 +218,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8F6FF',
   },
   Icons: {flex: 0.3, marginLeft: 10},
-  mapContainer: {
-    //the container will fill the whole screen.
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    flex: 1,
-  },
-  map: {
-    flex: 1,
-  },
 });

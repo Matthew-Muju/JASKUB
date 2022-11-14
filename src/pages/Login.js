@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,14 +6,21 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import {firebase} from '@react-native-firebase/auth';
+import {getDatabase, ref, set} from 'firebase/database';
+// import {db} from '../components/config';
 import {Header, Gap, Button} from '../components';
 import SelectDropdown from 'react-native-select-dropdown';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import IonIcons from 'react-native-vector-icons/Ionicons';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const jeniskelamin = ['Laki-laki', 'Perempuan'];
-
+// const db = GetDatabase(app);
+// const dbRef = ref(db);
 export default class SignUp extends React.Component {
   state = {
     userName: '',
@@ -22,7 +29,39 @@ export default class SignUp extends React.Component {
     password: '',
     errorMessage: null,
     jenisKelamin: '',
+    selectedDate: new Date(),
+    isDatePickerVisible: false,
   };
+
+  // pushData() {
+  //   push(ref(db, '/UserList'), {
+  //     username: userName,
+  //     dialnumber: dialNumber,
+  //     email: email,
+  //     password: password,
+  //     jeniskelamin: jenisKelamin,
+  //     birthdate: selectedDate,
+  //   });
+  // }
+
+  writeUserData() {
+    set(ref(db, 'users/' + userName), {
+      username: userName,
+      dialnumber: dialNumber,
+      email: email,
+      password: password,
+      jeniskelamin: jenisKelamin,
+      birthdate: selectedDate,
+    })
+      .then(() => {
+        // Data saved successfully!
+        alert('data submitted!');
+      })
+      .catch(error => {
+        // The write failed...
+        alert(error);
+      });
+  }
 
   handleSignUp = () => {
     const {email, password} = this.state;
@@ -33,10 +72,40 @@ export default class SignUp extends React.Component {
       .catch(error => this.setState({errorMessage: error.message}));
   };
 
+  signUp = () => {
+    this.handleSignUp();
+    this.pushData();
+  };
+
+  showDatePicker = () => {
+    this.setState({
+      isDatePickerVisible: true,
+    });
+  };
+
+  hideDatePicker = () => {
+    this.setState({
+      isDatePickerVisible: false,
+    });
+  };
+
+  handleConfirm = date => {
+    this.setState({
+      selectedDate: date,
+    });
+    hideDatePicker();
+  };
+
+  getDate = () => {
+    const {date} = this.state;
+    let tempDate = date.toString().split(' ');
+    return date !== '' ? `${tempDate[2]} ${tempDate[1]} ${tempDate[3]}` : '';
+  };
+
   render() {
     return (
       <ScrollView>
-        <View>
+        <View style={styles.page}>
           <Header
             title="SIGN UP"
             onBack={() => this.props.navigation.goBack()}
@@ -51,6 +120,22 @@ export default class SignUp extends React.Component {
           <View style={styles.photoWrapper}></View>
           <View style={styles.formWrapper}>
             <Text style={styles.text}>Username</Text>
+            <SafeAreaView style={styles.safeView}>
+              <AntDesign
+                name="user"
+                style={styles.Icons}
+                size={28}
+                color="#2196F3"
+              />
+
+              <TextInput
+                value={this.state.userName}
+                onChangeText={userName => this.setState({userName})}
+                placeholder="Username"
+              />
+            </SafeAreaView>
+            <Gap height={16} />
+            {/* <Text style={styles.text}>Username</Text>
             <TextInput
               placeholder="Masukan Username"
               autoCapitalize="none"
@@ -58,15 +143,22 @@ export default class SignUp extends React.Component {
               onChangeText={userName => this.setState({userName})}
               value={this.state.userName}
             />
-            <Gap height={16} />
+            <Gap height={16} /> */}
             <Text style={styles.text}>Nomor Telepon</Text>
-            <TextInput
-              placeholder="Masukan Nomor Telepon"
-              autoCapitalize="none"
-              style={styles.textInput}
-              onChangeText={dialNumber => this.setState({dialNumber})}
-              value={this.state.dialNumber}
-            />
+            <SafeAreaView style={styles.safeView}>
+              <IonIcons
+                name="call"
+                style={styles.Icons}
+                size={28}
+                color="#2196F3"
+              />
+
+              <TextInput
+                value={this.state.dialNumber}
+                onChangeText={dialNumber => this.setState({dialNumber})}
+                placeholder="Nomor Telepon"
+              />
+            </SafeAreaView>
             <Gap height={16} />
             <Text style={styles.text}>Jenis Kelamin</Text>
             <SelectDropdown
@@ -87,7 +179,7 @@ export default class SignUp extends React.Component {
                 return (
                   <FontAwesome
                     name={isOpened ? 'chevron-up' : 'chevron-down'}
-                    color={'#444'}
+                    color={'#2196F3'}
                     size={18}
                   />
                 );
@@ -98,26 +190,74 @@ export default class SignUp extends React.Component {
               rowTextStyle={styles.dropdown1RowTxtStyle}
             />
             <Gap height={16} />
+            <Text style={styles.text}>Tanggal Lahir</Text>
+            <SafeAreaView style={styles.safeView}>
+              <FontAwesome
+                name="calendar"
+                style={styles.Icons}
+                size={28}
+                color="#2196F3"
+              />
+
+              <TextInput
+                value={
+                  this.state.selectedDate
+                    ? this.state.selectedDate.toLocaleDateString()
+                    : 'No date selected'
+                }
+                placeholder="Birth Date"
+                style={{flex: 0.9}}
+              />
+
+              <TouchableOpacity
+                onPress={this.showDatePicker}
+                style={{justifyContent: 'center', flex: 0.2, marginRight: 10}}>
+                <Text>Set Date</Text>
+                <DateTimePickerModal
+                  date={this.state.selectedDate}
+                  isVisible={this.state.isDatePickerVisible}
+                  mode="date"
+                  onConfirm={this.handleConfirm}
+                  onCancel={this.hideDatePicker}
+                />
+              </TouchableOpacity>
+            </SafeAreaView>
+            <Gap height={16} />
             <Text style={styles.text}>Email</Text>
-            <TextInput
-              placeholder="Masukan Email"
-              autoCapitalize="none"
-              style={styles.textInput}
-              onChangeText={email => this.setState({email})}
-              value={this.state.email}
-            />
+            <SafeAreaView style={styles.safeView}>
+              <IonIcons
+                name="mail"
+                style={styles.Icons}
+                size={28}
+                color="#2196F3"
+              />
+
+              <TextInput
+                value={this.state.email}
+                onChangeText={email => this.setState({email})}
+                placeholder="E-mail"
+              />
+            </SafeAreaView>
             <Gap height={16} />
             <Text style={styles.text}>Password</Text>
-            <TextInput
-              secureTextEntry
-              placeholder="Masukan Password"
-              autoCapitalize="none"
-              style={styles.textInput}
-              onChangeText={password => this.setState({password})}
-              value={this.state.password}
-            />
-            <Gap height={40} />
-            <Button title="Daftar" onPress={this.handleSignUp} />
+            <SafeAreaView style={styles.safeView}>
+              <FontAwesome
+                name="lock"
+                style={styles.Icons}
+                size={28}
+                color="#2196F3"
+              />
+
+              <TextInput
+                value={this.state.password}
+                onChangeText={password => this.setState({password})}
+                placeholder="Password"
+                secureTextEntry
+                autoCapitalize="none"
+              />
+            </SafeAreaView>
+            <Gap height={36} />
+            <Button title="Daftar" onPress={this.signUp} />
             <Gap height={20} />
             <View style={styles.wel}>
               <TouchableOpacity
@@ -159,40 +299,21 @@ export default class SignUp extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   wel: {
     alignItems: 'center',
+    marginBottom: 10,
   },
   welText: {
     fontFamily: 'Poppins-SemiBold',
     fontSize: 18,
     color: 'black',
   },
-  addPhoto: {
-    height: 100,
-    width: 100,
-    backgroundColor: '#E5E5E5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 100,
-  },
-  addPhotoText: {
-    fontFamily: 'Poppins-Light',
-    fontSize: 16,
-    maxWidth: 48,
-    textAlign: 'center',
-  },
-  photoWrapper: {
-    alignItems: 'center',
-    marginTop: 16,
-    marginBottom: 24,
-  },
   formWrapper: {
     paddingHorizontal: 24,
-  },
-  avatar: {
-    height: 100,
-    width: 100,
-    borderRadius: 100,
   },
   textInput: {
     borderWidth: 1,
@@ -217,10 +338,11 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 50,
     backgroundColor: '#FFF',
-    borderRadius: 8,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#444',
-    width: 340,
+    backgroundColor: '#E8F6FF',
+    borderColor: '#2196F3',
+    width: 345,
   },
   dropdown1BtnTxtStyle: {
     color: '#444',
@@ -240,4 +362,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: 14,
   },
+  safeView: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#2196F3',
+    borderRadius: 10,
+    backgroundColor: '#E8F6FF',
+  },
+  Icons: {flex: 0.1, marginLeft: 10},
 });

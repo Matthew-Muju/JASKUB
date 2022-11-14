@@ -1,3 +1,5 @@
 import Header from './Header';
+import JobCard from './JobCard';
+import StatusList from './StatusList';
 
-export {Header};
+export {Header, JobCard, StatusList};

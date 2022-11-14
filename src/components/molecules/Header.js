@@ -1,6 +1,5 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {IconBack, Opsi} from '../../assets/icon';
 import {Gap} from '../atoms';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -9,9 +8,15 @@ const settingIcon = (
 );
 const backIcon = <Icon name="chevron-back" size={30} color="#000003" />;
 
-const Header = ({title, onBack, options}) => {
+const Header = ({
+  title,
+  onBack,
+  options,
+  backgroundColor = '#2196F3',
+  color = 'white',
+}) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.container(backgroundColor)}>
       <View>
         {onBack && (
           <TouchableOpacity onPress={onBack} activeOpacity={0.7}>
@@ -19,9 +24,8 @@ const Header = ({title, onBack, options}) => {
           </TouchableOpacity>
         )}
       </View>
-      <Gap width={26} />
       <View>
-        <Text style={styles.text}>{title}</Text>
+        <Text style={styles.text(color)}>{title}</Text>
       </View>
       <View>
         {options && (
@@ -37,20 +41,22 @@ const Header = ({title, onBack, options}) => {
 export default Header;
 
 const styles = StyleSheet.create({
-  container: {
+  container: backgroundColor => ({
+    flex: 1,
     paddingHorizontal: 10,
-    paddingVertical: 30,
-    backgroundColor: '#2196F3',
+    paddingVertical: 24,
+    backgroundColor: backgroundColor,
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     borderBottomEndRadius: 30,
     borderBottomStartRadius: 30,
-  },
-  text: {
+  }),
+  text: color => ({
     fontSize: 40,
     fontFamily: 'Poppins-Medium',
-    color: 'white',
+    color: color,
     textAlign: 'center',
-  },
+  }),
 });

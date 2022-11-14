@@ -12,6 +12,8 @@ import {
   LoadingScreen,
   List,
   Setting,
+  Maps,
+  Rating,
 } from './pages';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -74,7 +76,7 @@ const NavScreen = () => {
         name="ProfileUser"
         component={ProfilUser}
         options={{
-          tabBarLabel: 'ProfileUser',
+          tabBarLabel: 'Profile',
           tabBarIcon: ({color}) => (
             <MaterialIcons name="person" color={color} size={30} />
           ),
@@ -127,6 +129,16 @@ const Router = () => {
       <Stack.Screen
         name="Setting"
         component={Setting}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Maps"
+        component={Maps}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Rating"
+        component={Rating}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

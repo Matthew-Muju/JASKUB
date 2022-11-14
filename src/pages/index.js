@@ -9,6 +9,8 @@ import Login from './Login';
 import LoadingScreen from './LoadingScreen';
 import List from './List';
 import Setting from './Setting';
+import Maps from './Maps';
+import Rating from './Rating';
 
 export {
   SignIn,
@@ -22,4 +24,6 @@ export {
   LoadingScreen,
   List,
   Setting,
+  Maps,
+  Rating,
 };
